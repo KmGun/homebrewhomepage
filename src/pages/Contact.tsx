@@ -4,6 +4,7 @@ import enterIcon from '../assets/Contact/enterIcon.svg';
 import artistIcon from '../assets/Contact/artistIcon.svg';
 import hireIcon from '../assets/Contact/hireIcon.svg';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -39,16 +40,19 @@ const Contact = () => {
           </CardContainer>
         </ContentWrapper>
       </Section>
+      <Footer />
     </ContactContainer>
   );
 };
 
 const ContactContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background: url(${backgroundImage}) no-repeat center center;
   background-size: cover;
   position: relative;
+  display: flex;
+  flex-direction: column;
   
   &::before {
     content: '';
@@ -75,6 +79,7 @@ const ContentWrapper = styled.div`
   text-align: center;
   width: 100%;
   padding: 0 10%;
+  margin-top: -80px;
 `;
 
 const Title = styled.h1`

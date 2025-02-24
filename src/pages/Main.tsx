@@ -27,6 +27,7 @@ import song7Thumbnail from '../assets/Main/song/song7.png';
 import song6Audio from '../assets/Main/song/song6.mp3';
 import song7Audio from '../assets/Main/song/song7.mp3';
 import { ReactComponent as PlayButtonIcon } from '../assets/Main/playbutton.svg';
+import { useNavigate } from 'react-router-dom';
 
 const MainWrapper = styled.div`
   display: flex;
@@ -59,6 +60,17 @@ const FullPageContainer = styled.div`
 const Main = () => {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
+  const navigate = useNavigate();
+
+  // // 페이지 로드 시 스크롤 위치를 최상단으로 이동
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+    
+  //   const container = document.querySelector('.fullpage-container');
+  //   if (container) {
+  //     container.scrollTo(0, 0);
+  //   }
+  // }, []);
 
   const handleAudioRef = (el: HTMLAudioElement | null, index: number) => {
     if (audioRefs.current.length <= index) {
@@ -104,6 +116,94 @@ const Main = () => {
     }
   };
 
+  const useInView = () => {
+    const [isInView, setIsInView] = useState(false);
+    const [hasAnimated, setHasAnimated] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setIsInView(true);
+            setHasAnimated(true);
+            
+            if (ref.current) {
+              observer.unobserve(ref.current);
+            }
+          }
+        },
+        { 
+          threshold: 0.1,
+          rootMargin: '0px'
+        }
+      );
+
+      const current = ref.current;
+      if (current) {
+        observer.observe(current);
+      }
+
+      return () => {
+        if (current) {
+          observer.unobserve(current);
+        }
+      };
+    }, [hasAnimated]);
+
+    return [ref, isInView] as const;
+  };
+
+  const useImageInView = () => {
+    const [isInView, setIsInView] = useState(false);
+    const [hasAnimated, setHasAnimated] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setIsInView(true);
+            setHasAnimated(true);
+            
+            if (ref.current) {
+              observer.unobserve(ref.current);
+            }
+          }
+        },
+        { 
+          threshold: 0.7,
+          rootMargin: '-10% 0px'
+        }
+      );
+
+      const current = ref.current;
+      if (current) {
+        observer.observe(current);
+      }
+
+      return () => {
+        if (current) {
+          observer.unobserve(current);
+        }
+      };
+    }, [hasAnimated]);
+
+    return [ref, isInView] as const;
+  };
+
+  const [titleRef, titleInView] = useInView();
+  const [playlistRef, playlistInView] = useInView();
+  const [videoRef, videoInView] = useInView();
+
+  // 섹션 3 refs
+  const [thirdTitleRef, thirdTitleInView] = useInView();
+  const [thirdImagesRef, thirdImagesInView] = useImageInView();
+  
+  // 섹션 4 refs
+  const [fourthTitleRef, fourthTitleInView] = useInView();
+  const [fourthContentRef, fourthContentInView] = useInView();
+
   return (
     <MainWrapper>
       <FullPageContainer className="fullpage-container">
@@ -125,7 +225,7 @@ const Main = () => {
                     <ButtonIcon><MobileIcon /></ButtonIcon>
                     앱으로 듣기
                   </StoreButton>
-                  <StoreButton>
+                  <StoreButton href="https://homebrewmusic.web.app/allArtistSongs/01418">
                     <ButtonIcon><WebIcon /></ButtonIcon>
                     웹으로 듣기
                   </StoreButton>
@@ -138,12 +238,12 @@ const Main = () => {
         </div>
         <div>
           <SecondSection>
-            <TitleArea>
+            <TitleArea ref={titleRef} className={`fade-in ${titleInView ? 'visible' : ''}`}>
               <MainTitle>이런 음악을<br/>만듭니다.</MainTitle>
               <SubTitle>홈브루 프로듀싱 팀과, 유저들이 직접 제작한<br/>음원들을 들어보세요!</SubTitle>
             </TitleArea>
             
-            <div>
+            <div ref={playlistRef} className={`fade-in fade-in-delay-1 ${playlistInView ? 'visible' : ''}`}>
               <SectionSubTitle>유저가 직접 제작한 음원들</SectionSubTitle>
               <PlaylistArea>
                 {songData.map((song, index) => (
@@ -181,10 +281,9 @@ const Main = () => {
               </PlaylistArea>
             </div>
             
-            <div>
+            <div ref={videoRef} className={`fade-in fade-in-delay-2 ${videoInView ? 'visible' : ''}`}>
               <SectionSubTitle>SNS에서 바이럴 되고 있는 영상들</SectionSubTitle>
               <VideoArea>
-                {/* 유튜브 공유 -> 퍼가기에서 받은 임베드 코드의 src를 사용하세요 */}
                 <iframe 
                   src="https://www.youtube.com/embed/FgNH6TBWcLg" 
                   title="YouTube video player" 
@@ -212,7 +311,10 @@ const Main = () => {
         </div>
         <div>
           <ThirdSection>
-            <ContentArea>
+            <ContentArea 
+              ref={thirdTitleRef} 
+              className={`fade-in ${thirdTitleInView ? 'visible' : ''}`}
+            >
               <SectionTitle>상상도 못한<br/>무제한의 컨텐츠.</SectionTitle>
               <Description>
                 가수당 평균 10곡,<br />
@@ -220,19 +322,31 @@ const Main = () => {
                 새로운 커버곡이 매일 업데이트 됩니다.
               </Description>
             </ContentArea>
-            <ImageGroup>
-              <LeftImage src={leftImage} alt="Left screenshot" />
-              <CenterImage src={centerImage} alt="Center screenshot" />
-              <RightImage src={rightImage} alt="Right screenshot" />
+            <ImageGroup 
+              ref={thirdImagesRef}
+              className={`${thirdImagesInView ? 'visible' : ''}`}
+            >
+              <LeftImage src={leftImage} alt="Left screenshot" className="side-image" />
+              <CenterImage src={centerImage} alt="Center screenshot" className="center-image" />
+              <RightImage src={rightImage} alt="Right screenshot" className="side-image" />
             </ImageGroup>
           </ThirdSection>
         </div>
         <div>
           <FourthSection>
-            <ThirdContentArea>
+            <ThirdContentArea 
+              ref={fourthTitleRef}
+              className={`fade-in ${fourthTitleInView ? 'visible' : ''}`}
+            >
               <ThirdSectionTitle>원하는 조합이<br/>없다구요?</ThirdSectionTitle>
             </ThirdContentArea>
-            <ThirdImageGroup>
+            <ThirdImageGroup 
+              ref={fourthContentRef}
+              className={`fade-in fade-in-delay-1 ${fourthContentInView ? 'visible' : ''}`}
+            >
+              <br/>
+              <br/>
+              <br/>
               <LeftContent>
                 <DescriptionContainer>
                   <DescriptionTitle>걱정마세요,<br/>원하는 가수와 곡을 선택하면</DescriptionTitle>
@@ -241,11 +355,11 @@ const Main = () => {
                     손쉽게 신청 하실수 있습니다!
                   </Description>
                 </DescriptionContainer>
-                <Main3SecondImage src={thirdSecondImage} alt="Left process" />
+                <Main3SecondImage src={thirdFirstImage} alt="Left process" />
               </LeftContent>
               <RightContent>
-                <Main3FirstImage src={thirdFirstImage} alt="Right process" />
-                <DescriptionContainer>
+                <Main3FirstImage src={thirdSecondImage} alt="Right process" />
+                <DescriptionContainer isRight={true}>
                   <DescriptionTitle>10분내 원하는 곡이<br/>제조 완료!</DescriptionTitle>
                   <Description>
                     곡 제작 난이도에 따라서<br/>
@@ -256,17 +370,7 @@ const Main = () => {
             </ThirdImageGroup>
           </FourthSection>
         </div>
-        <Banner>
-          <BannerContent>
-            <BannerTitle>홈브루가 궁금하다면 연락 주세요.</BannerTitle>
-            <BannerText>
-              이곳에서 일해보고 싶다는 생각이 들었다면,<br/>
-              홈브루를 도와주고 싶으시다면,<br/>
-              모두 연락 주세요.
-            </BannerText>
-            <BannerButton href="/contact">연락하기 →</BannerButton>
-          </BannerContent>
-        </Banner>
+        <Banner />
       </FullPageContainer>
       <Footer />
     </MainWrapper>
@@ -422,10 +526,36 @@ const SecondSection = styled.div`
   height: auto;
   background-color: #1a1a1a;
   position: relative;
-  padding: 5% 5%;
   display: flex;
   flex-direction: column;
   gap: 3vh;
+
+  // 내부 컨텐츠를 위한 컨테이너
+  > div {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 60%;  // 60%로 줄여서 양쪽 20% 여백 확보
+    padding: 5% 0;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-delay-1 {
+    transition-delay: 0.2s;
+  }
+
+  .fade-in-delay-2 {
+    transition-delay: 0.4s;
+  }
 `;
 
 const TitleArea = styled.div`
@@ -434,18 +564,18 @@ const TitleArea = styled.div`
 `;
 
 const MainTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   color: #FFD700;
   margin-bottom: 1rem;
 `;
 
 const SubTitle = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: white;
 `;
 
 const SectionSubTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.6rem;
   color: white;
   margin: 4vh 0 3vh 0;
 `;
@@ -616,7 +746,7 @@ const VideoArea = styled.div`
 const ContentArea = styled.div`
   position: absolute;
   left: 10%;
-  top: 25%;
+  top: 15%;
   transform: translateY(-25%);
   max-width: 400px;
   z-index: 5;
@@ -624,14 +754,14 @@ const ContentArea = styled.div`
 `;
 
 const SectionTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   color: #FFD700;
   margin-bottom: 1rem;
 `;
 
 const Description = styled.p`
-  font-size: 1.3rem;
-  line-height: 1.8;
+  font-size: 1.1rem;
+  line-height: 1.6;
   color: white;
   white-space: pre-line;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -643,6 +773,19 @@ const ImageGroup = styled.div`
   height: 100%;
   bottom: 0;
   z-index: 1;
+
+  &.visible {
+    .center-image {
+      opacity: 1;
+      transform: translateX(-50%);
+    }
+    
+    .side-image {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.8s;
+    }
+  }
 `;
 
 const LeftImage = styled.img`
@@ -655,6 +798,9 @@ const LeftImage = styled.img`
   left: 13%;
   bottom: 0;
   z-index: 1;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 `;
 
 const CenterImage = styled.img`
@@ -666,8 +812,10 @@ const CenterImage = styled.img`
   object-position: bottom;
   left: 50%;
   bottom: 10vh;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(50px);
   z-index: 3;
+  opacity: 0;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 `;
 
 const RightImage = styled.img`
@@ -680,6 +828,9 @@ const RightImage = styled.img`
   right: 13%;
   bottom: 0;
   z-index: 1;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 `;
 
 const ThirdSection = styled.div`
@@ -688,6 +839,29 @@ const ThirdSection = styled.div`
   background-color: #101010;
   position: relative;
   overflow: hidden;
+
+  > div {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 60%;  // 60%로 줄여서 양쪽 20% 여백 확보
+    height: 100%;
+    position: relative;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-delay-1 {
+    transition-delay: 0.2s;
+  }
 `;
 
 const ThirdContentArea = styled.div`
@@ -700,7 +874,7 @@ const ThirdContentArea = styled.div`
 `;
 
 const ThirdSectionTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   color: #FFD700;
   margin-bottom: 1rem;
   font-weight: bold;
@@ -709,52 +883,58 @@ const ThirdSectionTitle = styled.h1`
 const ThirdImageGroup = styled.div`
   position: absolute;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 60%;
   left: 20%;
   right: 20%;
-  height: 100%;
-  padding-top: 40vh;
+  height: 70%;
+  padding-top: 20vh;
+  gap: 5vh;
 `;
 
 const LeftContent = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  width: 45%;
-  height: 45vh;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 24vw;
 `;
 
 const RightContent = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-  width: 45%;
-  height: 45vh;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 24vw;
 `;
 
 const Main3FirstImage = styled.img`
-  height: 30vh;
+  height: 25vh;
   max-width: 350px;
   object-fit: contain;
+  margin-left: -10%;
 `;
 
 const Main3SecondImage = styled.img`
-  height: 30vh;
+  height: 25vh;
   max-width: 350px;
   object-fit: contain;
 `;
 
-const DescriptionContainer = styled.div`
+const DescriptionContainer = styled.div<{ isRight?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 400px;
+  text-align: ${props => props.isRight ? 'right' : 'left'};
 `;
 
 const DescriptionTitle = styled.h3`
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: white;
   margin-bottom: 0.5rem;
 `;
@@ -765,51 +945,106 @@ const FourthSection = styled.div`
   background-color: #1a1a1a;
   position: relative;
   overflow: hidden;
+
+  > div {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 60%;  // 60%로 줄여서 양쪽 20% 여백 확보
+    height: 100%;
+    position: relative;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-delay-1 {
+    transition-delay: 0.2s;
+  }
 `;
 
-const Banner = styled.div`
+const BannerSection = styled.div`
   width: 100%;
-  height: 30vh;
   background-color: #FFD700;
-  display: flex;
-  justify-content: center;
+  padding: 60px 0;
+
+  > div {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 60%;  // 60%로 줄여서 양쪽 20% 여백 확보
+  }
+`;
+
+const BannerInner = styled.div`  display: flex;
+  justify-content: space-between;
   align-items: center;
 `;
 
-const BannerContent = styled.div`
-  text-align: center;
-  max-width: 800px;
-  padding: 0 20px;
+const BannerLeft = styled.div`
+  flex: 1;
 `;
 
 const BannerTitle = styled.h2`
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #000;
   margin-bottom: 24px;
   font-weight: bold;
 `;
 
 const BannerText = styled.p`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #333;
-  line-height: 1.8;
-  margin-bottom: 32px;
+  line-height: 1.6;
+  font-weight: 700;
 `;
 
 const BannerButton = styled.a`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
   background-color: #000;
-  color: #fff;
-  padding: 16px 32px;
+  color: white;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: bold;
   text-decoration: none;
   transition: transform 0.2s;
+  cursor: pointer;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: scale(1.05);
   }
 `;
 
+const Banner = () => {
+  const navigate = useNavigate();
+
+  return (
+    <BannerSection>
+      <BannerInner>
+        <BannerLeft>
+          <BannerTitle>홈브루가 궁금하다면 연락 주세요.</BannerTitle>
+          <BannerText>
+            이곳에서 일해보고 싶다는 생각이 들었다면,<br/>
+            홈브루를 도와주고 싶으시다면,<br/>
+            모두 연락 주세요.
+          </BannerText>
+          <BannerButton as="button" onClick={() => navigate('/contact')}>
+            연락하기
+          </BannerButton>
+        </BannerLeft>
+      </BannerInner>
+    </BannerSection>
+  );
+};
+
 export default Main;
+

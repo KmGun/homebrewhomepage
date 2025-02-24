@@ -1,10 +1,14 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import homebrewLogo from '../assets/homebrewlogo.png';
 
 const Navigation = () => {
   return (
     <Nav>
-      <NavList>
+      <LogoLink to="/">
+        <Logo src={homebrewLogo} alt="Homebrew Logo" />
+      </LogoLink>
+      <CenterNavList>
         <NavItem>
           <StyledNavLink to="/about">회사 소개</StyledNavLink>
         </NavItem>
@@ -14,7 +18,7 @@ const Navigation = () => {
         <NavItem>
           <StyledNavLink to="/contact">CONTACT</StyledNavLink>
         </NavItem>
-      </NavList>
+      </CenterNavList>
     </Nav>
   );
 };
@@ -25,7 +29,14 @@ const Nav = styled.nav`
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.6);  // 반투명 검은색 배경
+  backdrop-filter: blur(8px);  // 블러 효과
+  -webkit-backdrop-filter: blur(8px);  // Safari 지원
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  // 미묘한 그림자 효과
 `;
 
 const NavList = styled.ul`
@@ -40,11 +51,13 @@ const NavItem = styled.li``;
 const StyledNavLink = styled(NavLink)`
   color: white;
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 16px;
   position: relative;
+  font-weight: 500;
   
   &.active {
     color: #FFD700;
+    font-weight: 600;
   }
 
   &::after {
@@ -61,6 +74,21 @@ const StyledNavLink = styled(NavLink)`
   &:hover::after {
     width: 100%;
   }
+`;
+
+const LogoLink = styled(NavLink)`
+  text-decoration: none;
+`;
+
+const Logo = styled.img`
+  height: 40px;
+  width: auto;
+`;
+
+const CenterNavList = styled(NavList)`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 export default Navigation; 
