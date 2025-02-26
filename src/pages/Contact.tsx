@@ -46,13 +46,18 @@ const Contact = () => {
 };
 
 const ContactContainer = styled.div`
-  width: 100%;
+  width: 100vw;
   min-height: 100vh;
   background: url(${backgroundImage}) no-repeat center center;
   background-size: cover;
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
   
   &::before {
     content: '';

@@ -3,6 +3,7 @@ import Navigation from './components/Navigation';
 import Main from './pages/Main';
 import Contact from './pages/Contact';
 import ContactForm from './pages/ContactForm';
+import About from './pages/About';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/homebrew" element={<div>Homebrew Page</div>} />
+        <Route path="/about" element={<About />} />
         <Route path="/contact/:type" element={<ContactForm />} />
       </Routes>
     </BrowserRouter>

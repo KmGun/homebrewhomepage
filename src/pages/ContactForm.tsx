@@ -1,10 +1,27 @@
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Main/MainbackgroundImage.png';
+import { useState } from 'react';
 
 const ContactForm = () => {
   const { type } = useParams();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    title: '',
+    content: ''
+  });
   
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const getTitle = () => {
     switch(type) {
       case 'entertainment':
@@ -18,38 +35,83 @@ const ContactForm = () => {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // 필수 항목 검사
+    const { name, email, phone, title, content } = formData;
+    if (!name || !email || !phone || !title || !content) {
+      alert('모든 필수 항목을 채워주세요. (첨부파일 제외)');
+      return;
+    }
+    
+    alert('문의가 성공적으로 제출되었습니다.');
+    // 메인 컨택트 페이지(카드 선택 페이지)로 이동
+    navigate('/contact');
+  };
+
   return (
     <ContactFormContainer>
       <FormSection>
         <MainTitle>아래 내용을 간단히 채워주세요.</MainTitle>
         <FormWrapper>
           <SubTitle>24시간 내 회신 드리겠습니다.</SubTitle>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <InputGroup>
-              <Label>이름</Label>
-              <Input type="text" placeholder="이름을 입력해주세요" />
+              <Label>이름 *</Label>
+              <Input 
+                type="text" 
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="이름을 입력해주세요" 
+              />
             </InputGroup>
             <InputGroup>
-              <Label>이메일</Label>
-              <Input type="email" placeholder="이메일을 입력해주세요" />
+              <Label>이메일 *</Label>
+              <Input 
+                type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="이메일을 입력해주세요" 
+              />
             </InputGroup>
             <InputGroup>
-              <Label>전화번호</Label>
-              <Input type="tel" placeholder="전화번호를 입력해주세요" />
+              <Label>전화번호 *</Label>
+              <Input 
+                type="tel" 
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="전화번호를 입력해주세요" 
+              />
             </InputGroup>
             <InputGroup>
-              <Label>제목</Label>
-              <Input type="text" placeholder="제목을 입력해주세요" />
+              <Label>제목 *</Label>
+              <Input 
+                type="text" 
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="제목을 입력해주세요" 
+              />
             </InputGroup>
             <InputGroup>
-              <Label>내용</Label>
-              <TextArea placeholder="내용을 입력해주세요" rows={5} />
+              <Label>내용 *</Label>
+              <TextArea 
+                name="content"
+                value={formData.content}
+                onChange={handleChange}
+                placeholder="내용을 입력해주세요" 
+                rows={5} 
+              />
             </InputGroup>
             <InputGroup>
               <Label>첨부파일</Label>
               <Input type="file" />
             </InputGroup>
-            <SubmitButton>작성 완료</SubmitButton>
+            <SubmitButton type="submit">작성 완료</SubmitButton>
           </Form>
         </FormWrapper>
       </FormSection>
