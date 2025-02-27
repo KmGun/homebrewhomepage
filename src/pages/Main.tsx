@@ -28,19 +28,10 @@ import song6Audio from '../assets/Main/song/song6.mp3';
 import song7Audio from '../assets/Main/song/song7.mp3';
 import { ReactComponent as PlayButtonIcon } from '../assets/Main/playbutton.svg';
 import { useNavigate } from 'react-router-dom';
-import { createGlobalStyle } from 'styled-components';
+import GlobalStyle from '../styles/GlobalStyle';
 import mobileSection3Image1 from '../assets/Main/mobile_section3_1.png';
 import mobileSection3Image2 from '../assets/Main/mobile_section3_2.png';
 import mobileSection3Image3 from '../assets/Main/mobile_section3_3.png';
-
-const GlobalStyle = createGlobalStyle`
-  html, body {
-    background-color: #1a1a1a;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-`;
 
 const MainWrapper = styled.div`
   display: flex;
@@ -54,6 +45,13 @@ const MainWrapper = styled.div`
   left: 0;
   right: 0;
   background-color: #1a1a1a;
+  
+  @media (max-width: 768px) {
+    position: relative;
+    min-height: 100%;
+    height: auto;
+    overflow: hidden;
+  }
 `;
 
 const FullPageContainer = styled.div`
@@ -76,6 +74,12 @@ const FullPageContainer = styled.div`
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none;
   scrollbar-width: none;
+  
+  @media (max-width: 768px) {
+    position: relative;
+    height: auto;
+    min-height: 100%;
+  }
 `;
 
 const Main = () => {

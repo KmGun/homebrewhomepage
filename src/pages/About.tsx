@@ -6,17 +6,8 @@ import backgroundImage2 from '../assets/About/backgroundimage.jpeg';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Footer from '../components/Footer';
-import { createGlobalStyle } from 'styled-components';
+import GlobalStyle from '../styles/GlobalStyle';
 import { ReactComponent as DownIcon } from '../assets/Main/MainDownIcon.svg';
-
-const GlobalStyle = createGlobalStyle`
-  html, body {
-    background-color: #1a1a1a;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-`;
 
 const About = () => {
   const navigate = useNavigate();

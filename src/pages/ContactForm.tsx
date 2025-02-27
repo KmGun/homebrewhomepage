@@ -2,17 +2,8 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Main/MainbackgroundImage.png';
 import { useState } from 'react';
-import { createGlobalStyle } from 'styled-components';
+import GlobalStyle from '../styles/GlobalStyle';
 import Footer from '../components/Footer';
-
-const GlobalStyle = createGlobalStyle`
-  html, body {
-    background-color: #1a1a1a;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-`;
 
 const ContactForm = () => {
   const { type } = useParams();

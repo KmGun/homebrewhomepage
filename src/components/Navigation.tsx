@@ -2,19 +2,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { NavLink, useNavigate } from 'react-router-dom';
 import homebrewLogo from '../assets/homebrewlogo.png';
 import { useState, useEffect } from 'react';
-
-// 전역 스타일 추가
-const GlobalStyle = createGlobalStyle`
-  body, html {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-  
-  #root {
-    min-height: 100vh;
-  }
-`;
+import GlobalStyle from '../styles/GlobalStyle';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
