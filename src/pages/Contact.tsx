@@ -1,10 +1,19 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import backgroundImage from '../assets/Main/MainbackgroundImage.png';
 import enterIcon from '../assets/Contact/enterIcon.svg';
 import artistIcon from '../assets/Contact/artistIcon.svg';
 import hireIcon from '../assets/Contact/hireIcon.svg';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+
+const GlobalStyle = createGlobalStyle`
+  html, body {
+    background-color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+`;
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -14,34 +23,37 @@ const Contact = () => {
   };
 
   return (
-    <ContactContainer>
-      <Section>
-        <ContentWrapper>
-          <Title>어디서 연락 주셨나요?</Title>
-          <CardContainer>
-            <ContactCard onClick={() => handleCardClick('entertainment')}>
-              <IconWrapper>
-                <img src={enterIcon} alt="연예기획사 아이콘" />
-              </IconWrapper>
-              <CardTitle>연예 기획사</CardTitle>
-            </ContactCard>
-            <ContactCard onClick={() => handleCardClick('artist')}>
-              <IconWrapper>
-                <img src={artistIcon} alt="아티스트 아이콘" />
-              </IconWrapper>
-              <CardTitle>아티스트</CardTitle>
-            </ContactCard>
-            <ContactCard onClick={() => handleCardClick('hire')}>
-              <IconWrapper>
-                <img src={hireIcon} alt="채용 아이콘" />
-              </IconWrapper>
-              <CardTitle>채용</CardTitle>
-            </ContactCard>
-          </CardContainer>
-        </ContentWrapper>
-      </Section>
-      <Footer />
-    </ContactContainer>
+    <>
+      <GlobalStyle />
+      <ContactContainer>
+        <Section>
+          <ContentWrapper>
+            <Title>어디서 연락 주셨나요?</Title>
+            <CardContainer>
+              <ContactCard onClick={() => handleCardClick('entertainment')}>
+                <IconWrapper>
+                  <img src={enterIcon} alt="연예기획사 아이콘" />
+                </IconWrapper>
+                <CardTitle>연예 기획사</CardTitle>
+              </ContactCard>
+              <ContactCard onClick={() => handleCardClick('artist')}>
+                <IconWrapper>
+                  <img src={artistIcon} alt="아티스트 아이콘" />
+                </IconWrapper>
+                <CardTitle>아티스트</CardTitle>
+              </ContactCard>
+              <ContactCard onClick={() => handleCardClick('hire')}>
+                <IconWrapper>
+                  <img src={hireIcon} alt="채용 아이콘" />
+                </IconWrapper>
+                <CardTitle>채용</CardTitle>
+              </ContactCard>
+            </CardContainer>
+          </ContentWrapper>
+        </Section>
+        <Footer />
+      </ContactContainer>
+    </>
   );
 };
 
@@ -68,6 +80,12 @@ const ContactContainer = styled.div`
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
   }
+  
+  @media (max-width: 768px) {
+    &::before {
+      display: none;
+    }
+  }
 `;
 
 const Section = styled.section`
@@ -92,6 +110,16 @@ const Title = styled.h1`
   font-weight: bold;
   color: white;
   margin-bottom: 5rem;
+  
+  @media (max-width: 768px) {
+    font-size: 2.2rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
 `;
 
 const CardContainer = styled.div`
@@ -99,6 +127,19 @@ const CardContainer = styled.div`
   justify-content: center;
   gap: 2rem;
   margin-top: 2rem;
+  
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1.2rem;
+    justify-items: center;
+    margin-top: 70px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
 `;
 
 const ContactCard = styled.div`
@@ -116,6 +157,25 @@ const ContactCard = styled.div`
   &:hover {
     transform: scale(1.05);
   }
+  
+  @media (max-width: 768px) {
+    width: 160px;
+    height: 150px;
+    border-radius: 15px;
+  }
+  
+  @media (max-width: 480px) {
+    width: 140px;
+    height: 130px;
+    border-radius: 12px;
+  }
+  
+  &:nth-child(3) {
+    @media (max-width: 768px) {
+      grid-column: span 2;
+      margin-top: 0.5rem;
+    }
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -128,11 +188,31 @@ const IconWrapper = styled.div`
     height: 100%;
     color: white;
   }
+  
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.8rem;
+  }
+  
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.6rem;
+  }
 `;
 
 const CardTitle = styled.h2`
   font-size: 1.5rem;
   color: white;
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 `;
 
 export default Contact;

@@ -6,6 +6,17 @@ import backgroundImage2 from '../assets/About/backgroundimage.jpeg';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Footer from '../components/Footer';
+import { createGlobalStyle } from 'styled-components';
+import { ReactComponent as DownIcon } from '../assets/Main/MainDownIcon.svg';
+
+const GlobalStyle = createGlobalStyle`
+  html, body {
+    background-color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+`;
 
 const About = () => {
   const navigate = useNavigate();
@@ -45,68 +56,72 @@ const About = () => {
   }, [nextSlide]);
   
   return (
-    <MainWrapper>
-      <FullPageContainer>
-        <HomeContainer>
-          <Section>
-            <ContentWrapper>
-              <MainText>
-                <TextLine>모두를 위한 음악.</TextLine>
-              </MainText>
-              <SubText>
-                창작자가 좋은 음악을 만들기 어려운 환경,<br/>
-                대중들이 음악을 더 균형있게 즐길수 없는 환경을 해결하기 위해 일합니다.
-              </SubText>
-              <ButtonGroup>
-                <StoreButton onClick={scrollToSection2}>
-                  자세히 보기
-                </StoreButton>
-              </ButtonGroup>
-            </ContentWrapper>
-          </Section>
-        </HomeContainer>
-        
-        <Section2Container id="section2" backgroundPosition="center center">
-          <Section2Content>
-            <Section2Title>창작자를 위한 플랫폼</Section2Title>
-            <Section2Text>
-              음악 시장의 중심은 소비자가 아닙니다.<br/>
-              창작자를 중심으로, 공정한 수익분배가 이루어지도록 합니다.
-            </Section2Text>
-          </Section2Content>
-        </Section2Container>
-        
-        <Section3Container>
-          <Section3TitleContainer>
-            <Section3Title>균형잡힌 음악시장</Section3Title>
-            <Section3Subtitle>소수 자본가들이 독점 하지 않는, <br/>좋은 음악이 최종 승리하는 음악시장을 추구합니다.</Section3Subtitle>
-          </Section3TitleContainer>
-          <Section3Content>
-            <EnergyImageContainer>
-              <EnergyImage src={activeEnergy === 0 ? section1Image : section2Image} 
-                          alt="에너지 솔루션" />
-            </EnergyImageContainer>
-            <EnergyOptionsContainer>
-              <EnergyOption 
-                onClick={() => handleEnergyClick(0)}
-                className={activeEnergy === 0 ? 'active' : ''}
-              >
-                <EnergyTitle>기형적인 마케팅 구조 개선</EnergyTitle>
-                <EnergyDescription>차트인을 위한 필수조건이 오직 좋은 음악을 만드는것이여야 합니다.</EnergyDescription>
-              </EnergyOption>
-              <EnergyOption 
-                onClick={() => handleEnergyClick(1)}
-                className={activeEnergy === 1 ? 'active' : ''}
-              >
-                <EnergyTitle>음악 장르 다양성 문제 해결</EnergyTitle>
-                <EnergyDescription>생산자가 대형 기획사에 편중되어 있는 문제를 해결합니다.</EnergyDescription>
-              </EnergyOption>
-            </EnergyOptionsContainer>
-          </Section3Content>
-        </Section3Container>
-      </FullPageContainer>
-      <Footer />
-    </MainWrapper>
+    <>
+      <GlobalStyle />
+      <MainWrapper>
+        <FullPageContainer>
+          <HomeContainer>
+            <Section>
+              <ContentWrapper>
+                <MainText>
+                  <TextLine>모두를 위한 음악.</TextLine>
+                </MainText>
+                <SubText>
+                  창작자가 좋은 음악을 만들기 어려운 환경,<br/>
+                  대중들이 음악을 더 균형있게 즐길수 없는 환경을 해결하기 위해 일합니다.
+                </SubText>
+                <ButtonGroup>
+                  <StoreButton onClick={scrollToSection2}>
+                    자세히 보기
+                  </StoreButton>
+                </ButtonGroup>
+              </ContentWrapper>
+              <FloatingDownIcon onClick={scrollToSection2} />
+            </Section>
+          </HomeContainer>
+          
+          <Section2Container id="section2" backgroundPosition="center center">
+            <Section2Content>
+              <Section2Title>창작자를 위한 플랫폼</Section2Title>
+              <Section2Text>
+                음악 시장의 중심은 소비자가 아닙니다.<br/>
+                창작자를 중심으로, 공정한 수익분배가 이루어지도록 합니다.
+              </Section2Text>
+            </Section2Content>
+          </Section2Container>
+          
+          <Section3Container>
+            <Section3TitleContainer>
+              <Section3Title>균형잡힌 음악시장</Section3Title>
+              <Section3Subtitle>소수 자본가들이 독점 하지 않는, <br/>좋은 음악이 최종 승리하는 음악시장을 추구합니다.</Section3Subtitle>
+            </Section3TitleContainer>
+            <Section3Content>
+              <EnergyImageContainer>
+                <EnergyImage src={activeEnergy === 0 ? section1Image : section2Image} 
+                            alt="에너지 솔루션" />
+              </EnergyImageContainer>
+              <EnergyOptionsContainer>
+                <EnergyOption 
+                  onClick={() => handleEnergyClick(0)}
+                  className={activeEnergy === 0 ? 'active' : ''}
+                >
+                  <EnergyTitle>기형적인 마케팅 구조 개선</EnergyTitle>
+                  <EnergyDescription>차트인을 위한 필수조건이 오직 좋은 음악을 만드는것이여야 합니다.</EnergyDescription>
+                </EnergyOption>
+                <EnergyOption 
+                  onClick={() => handleEnergyClick(1)}
+                  className={activeEnergy === 1 ? 'active' : ''}
+                >
+                  <EnergyTitle>음악 장르 다양성 문제 해결</EnergyTitle>
+                  <EnergyDescription>생산자가 대형 기획사에 편중되어 있는 문제를 해결합니다.</EnergyDescription>
+                </EnergyOption>
+              </EnergyOptionsContainer>
+            </Section3Content>
+          </Section3Container>
+        </FullPageContainer>
+        <Footer />
+      </MainWrapper>
+    </>
   );
 };
 
@@ -155,6 +170,12 @@ const HomeContainer = styled.div`
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
   }
+  
+  @media (max-width: 768px) {
+    &::before {
+      display: none; // 모바일에서 어두운 오버레이 제거
+    }
+  }
 `;
 
 const Section = styled.section`
@@ -176,6 +197,13 @@ const ContentWrapper = styled.div`
   padding: 0 20px;
   margin-left: 10%;
   margin-right: auto;
+  
+  @media (max-width: 768px) {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 0 15px;
+  }
 `;
 
 const MainText = styled.div`
@@ -188,6 +216,10 @@ const TextLine = styled.h2`
   font-weight: bold;
   margin: 8px 0;
   text-align: left;
+  
+  @media (max-width: 768px) {
+    font-size: 36px;
+  }
 `;
 
 const SubText = styled.p`
@@ -195,12 +227,21 @@ const SubText = styled.p`
   margin-bottom: 40px;
   line-height: 1.5;
   text-align: left;
+  
+  @media (max-width: 768px) {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 12px;
+  
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+  }
 `;
 
 const StoreButton = styled.button`
@@ -222,6 +263,13 @@ const StoreButton = styled.button`
   &:hover {
     transform: scale(1.05);
   }
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding: 10px 20px;
+    min-width: 130px;
+    height: 45px;
+  }
 `;
 
 const Section2Container = styled.div<{ backgroundPosition: string }>`
@@ -240,6 +288,12 @@ const Section2Container = styled.div<{ backgroundPosition: string }>`
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
+  }
+  
+  @media (max-width: 768px) {
+    &::before {
+      display: none; // 모바일에서 어두운 오버레이 제거
+    }
   }
   
   &::after {
@@ -270,12 +324,22 @@ const Section2Title = styled.h2`
   font-weight: 400;
   margin-bottom: 20px;
   color: #FFD700;
+  
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
 `;
 
 const Section2Text = styled.p`
   font-size: 20px;
   line-height: 1.6;
   color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding: 0 15px;
+  }
 `;
 
 const Section3Container = styled.div`
@@ -306,6 +370,12 @@ const Section3TitleContainer = styled.div`
   margin-bottom: 60px;
   position: relative;
   z-index: 2;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 40px;
+  }
 `;
 
 const Section3Title = styled.h2`
@@ -314,6 +384,12 @@ const Section3Title = styled.h2`
   color: #FFD700;
   margin: 0;
   margin-right: 20px;
+  
+  @media (max-width: 768px) {
+    font-size: 28px;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
 `;
 
 const Section3Subtitle = styled.p`
@@ -322,6 +398,13 @@ const Section3Subtitle = styled.p`
   margin: 0;
   padding-left: 20px;
   border-left: 1px solid #333;
+  
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-left: 0;
+    border-left: none;
+    text-align: center;
+  }
 `;
 
 const Section3Content = styled.div`
@@ -343,6 +426,11 @@ const EnergyImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  
+  @media (max-width: 768px) {
+    height: 300px;
+    margin-bottom: 30px;
+  }
 `;
 
 const EnergyImage = styled.img`
@@ -367,23 +455,36 @@ const EnergyOptionsContainer = styled.div`
   margin: 0 auto;
   padding: 0 20px;
   position: relative;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 30px;
+  }
 `;
 
 const EnergyTitle = styled.h3`
   font-size: 20px;
-  color: #FFFFFF;
+  color: #888888;
   margin-bottom: 10px;
   font-weight: 400;
   transition: color 0.3s ease;
   text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 const EnergyDescription = styled.p`
   font-size: 14px;
-  color: #AAAAAA;
+  color: #666666;
   line-height: 1.5;
   transition: color 0.3s ease;
   text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
 `;
 
 const EnergyOption = styled.div`
@@ -411,8 +512,48 @@ const EnergyOption = styled.div`
     background-color: #FFFFFF;
   }
   
-  &.active ${EnergyTitle}, &.active ${EnergyDescription} {
+  &.active ${EnergyTitle} {
     color: #FFFFFF;
+  }
+  
+  &.active ${EnergyDescription} {
+    color: #AAAAAA;
+  }
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const FloatingDownIcon = styled(DownIcon)`
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: auto;
+  color: white;
+  animation: float 2s ease-in-out infinite;
+  cursor: pointer;
+
+  @media (max-width: 768px) {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+    z-index: 10;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateX(-50%) translateY(0px);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-20px);
+    }
+    100% {
+      transform: translateX(-50%) translateY(0px);
+    }
   }
 `;
 

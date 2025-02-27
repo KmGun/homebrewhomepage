@@ -31,9 +31,16 @@ const CompanyInfo = styled.div`
 const SocialLinks = styled.div`
   display: flex;
   gap: 10px;
-  position: absolute;
-  right: 20px;
-  top: 0;
+  
+  @media (min-width: 768px) {
+    position: absolute;
+    right: 20px;
+    top: 0;
+  }
+  
+  @media (max-width: 767px) {
+    margin-top: 20px;
+  }
 `;
 
 const SocialIcon = styled.a.attrs({

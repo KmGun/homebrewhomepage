@@ -2,6 +2,17 @@ import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Main/MainbackgroundImage.png';
 import { useState } from 'react';
+import { createGlobalStyle } from 'styled-components';
+import Footer from '../components/Footer';
+
+const GlobalStyle = createGlobalStyle`
+  html, body {
+    background-color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+`;
 
 const ContactForm = () => {
   const { type } = useParams();
@@ -15,6 +26,7 @@ const ContactForm = () => {
   });
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.stopPropagation();
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -51,71 +63,89 @@ const ContactForm = () => {
   };
 
   return (
-    <ContactFormContainer>
-      <FormSection>
-        <MainTitle>아래 내용을 간단히 채워주세요.</MainTitle>
-        <FormWrapper>
-          <SubTitle>24시간 내 회신 드리겠습니다.</SubTitle>
-          <Form onSubmit={handleSubmit}>
-            <InputGroup>
-              <Label>이름 *</Label>
-              <Input 
-                type="text" 
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="이름을 입력해주세요" 
-              />
-            </InputGroup>
-            <InputGroup>
-              <Label>이메일 *</Label>
-              <Input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="이메일을 입력해주세요" 
-              />
-            </InputGroup>
-            <InputGroup>
-              <Label>전화번호 *</Label>
-              <Input 
-                type="tel" 
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="전화번호를 입력해주세요" 
-              />
-            </InputGroup>
-            <InputGroup>
-              <Label>제목 *</Label>
-              <Input 
-                type="text" 
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="제목을 입력해주세요" 
-              />
-            </InputGroup>
-            <InputGroup>
-              <Label>내용 *</Label>
-              <TextArea 
-                name="content"
-                value={formData.content}
-                onChange={handleChange}
-                placeholder="내용을 입력해주세요" 
-                rows={5} 
-              />
-            </InputGroup>
-            <InputGroup>
-              <Label>첨부파일</Label>
-              <Input type="file" />
-            </InputGroup>
-            <SubmitButton type="submit">작성 완료</SubmitButton>
-          </Form>
-        </FormWrapper>
-      </FormSection>
-    </ContactFormContainer>
+    <>
+      <GlobalStyle />
+      <ContactFormContainer>
+        <FormSection>
+          <MainTitle>아래 내용을 간단히 채워주세요.</MainTitle>
+          <FormWrapper>
+            <SubTitle>24시간 내 회신 드리겠습니다.</SubTitle>
+            <Form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
+              <InputGroup>
+                <Label htmlFor="name">이름 *</Label>
+                <Input 
+                  id="name"
+                  type="text" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="이름을 입력해주세요" 
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label htmlFor="email">이메일 *</Label>
+                <Input 
+                  id="email"
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="이메일을 입력해주세요" 
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label htmlFor="phone">전화번호 *</Label>
+                <Input 
+                  id="phone"
+                  type="tel" 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="전화번호를 입력해주세요" 
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label htmlFor="title">제목 *</Label>
+                <Input 
+                  id="title"
+                  type="text" 
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="제목을 입력해주세요" 
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label htmlFor="content">내용 *</Label>
+                <TextArea 
+                  id="content"
+                  name="content"
+                  value={formData.content}
+                  onChange={handleChange}
+                  placeholder="내용을 입력해주세요" 
+                  rows={5} 
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label htmlFor="file">첨부파일</Label>
+                <Input 
+                  id="file"
+                  type="file" 
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </InputGroup>
+              <SubmitButton type="submit">작성 완료</SubmitButton>
+            </Form>
+          </FormWrapper>
+        </FormSection>
+        <Footer />
+      </ContactFormContainer>
+    </>
   );
 };
 
@@ -142,10 +172,16 @@ const ContactFormContainer = styled.div`
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
   }
+  
+  @media (max-width: 768px) {
+    &::before {
+      display: none; // 모바일에서 어두운 오버레이 제거
+    }
+  }
 `;
 
 const FormSection = styled.section`
-  min-height: 100vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -153,6 +189,17 @@ const FormSection = styled.section`
   position: relative;
   z-index: 1;
   padding: 2rem 0;
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+    justify-content: flex-start;
+    margin-top: 80px; /* 네비게이션 바 높이보다 더 크게 설정 */
+    padding-top: 2rem; /* 추가 패딩 */
+  }
+  
+  @media (max-width: 480px) {
+    margin-top: 70px; /* 더 작은 화면에서 조정 */
+  }
 `;
 
 const FormWrapper = styled.div`
@@ -161,7 +208,20 @@ const FormWrapper = styled.div`
   background: rgba(17, 17, 17, 0.8);
   border-radius: 15px;
   padding: 2rem;
-  margin: 0 1rem;
+  margin: 0 2rem; /* 좌우 여백 */
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    max-width: 80%; /* 너비 감소로 좌우 여백 확보 */
+    width: 80%; /* 명시적 너비 설정 */
+    border-radius: 12px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1.2rem;
+    max-width: 75%; /* 더 작은 화면에서 너비 추가 감소 */
+    width: 75%; /* 명시적 너비 설정 */
+  }
 `;
 
 const MainTitle = styled.h1`
@@ -172,6 +232,16 @@ const MainTitle = styled.h1`
   font-weight: bold;
   position: relative;
   z-index: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const SubTitle = styled.h2`
@@ -179,23 +249,53 @@ const SubTitle = styled.h2`
   color: white;
   text-align: center;
   margin-bottom: 2rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  
+  @media (max-width: 768px) {
+    gap: 1.2rem;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
 `;
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  
+  @media (max-width: 480px) {
+    gap: 0.3rem;
+  }
 `;
 
 const Label = styled.label`
   color: white;
   font-size: 1.1rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Input = styled.input`
@@ -204,6 +304,20 @@ const Input = styled.input`
   border: none;
   background: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
+  
+  &:focus {
+    outline: 2px solid #FFD700;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -214,6 +328,18 @@ const TextArea = styled.textarea`
   font-size: 0.9rem;
   resize: vertical;
   min-height: 100px;
+  
+  @media (max-width: 768px) {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+    min-height: 80px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    min-height: 70px;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -230,6 +356,18 @@ const SubmitButton = styled.button`
   
   &:hover {
     background: #FFC700;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+    margin-top: 0.8rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+    margin-top: 0.6rem;
   }
 `;
 
