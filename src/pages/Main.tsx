@@ -543,7 +543,16 @@ const Section = styled.section`
     padding: 0 5%;
     height: 100vh;
     overflow: hidden;
-    padding-bottom: 80px;
+    padding-bottom: 0;
+    gap: 60px;
+  }
+
+  @media (max-width: 768px) and (max-height: 800px) {
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) and (max-height: 700px) {
+    gap: 30px;
   }
 `;
 
@@ -551,6 +560,8 @@ const ContentWrapper = styled.div`
   color: white;
   margin-top: 180px;
   width: 500px;
+  position: relative;
+  z-index: 2;
   
   @media (max-width: 768px) {
     margin-top: 120px;
@@ -559,7 +570,16 @@ const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  @media (max-height: 800px) {
+    margin-top: 120px;
+  }
+
+  @media (max-height: 700px) {
+    margin-top: 80px;
   }
 `;
 
@@ -629,6 +649,8 @@ const SubText = styled.p`
 const ButtonGroup = styled.div`
   display: flex;
   gap: 12px;
+  position: relative;
+  z-index: 2;
   
   @media (max-width: 480px) {
     flex-direction: row;
@@ -703,24 +725,21 @@ const AppPreview = styled.img`
   }
   
   @media (max-width: 768px) {
-    position: absolute;
-    bottom: -70px;
-    right: 50%;
-    transform: translateX(50%);
+    position: relative;
+    right: auto;
+    transform: none;
+    width: 75vw;
     height: auto;
-    width: 80vw;
-    max-width: 450px;
-    min-width: 320px;
-    margin: 0;
-    top: auto;
+    margin: 0 auto;
     z-index: 0;
+    padding-top: 60px;
+    margin-bottom: -10%;
   }
   
   @media (max-width: 480px) {
-    width: 80vw;
-    max-width: 380px;
-    min-width: 300px;
-    margin: 0;
+    width: 75vw;
+    padding-top: 80px;
+    margin-bottom: -15%;
   }
 `;
 
@@ -1118,8 +1137,9 @@ const VideoArea = styled.div`
 
 const ThirdSection = styled.div`
   width: 100%;
-  height: 100vh;
-  padding-bottom: 140px;
+  min-height: 100vh;
+  height: auto;
+  padding: 140px 0;
   background-color: #101010;
   position: relative;
   overflow: hidden;
@@ -1142,8 +1162,9 @@ const ThirdSection = styled.div`
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding-bottom: 100px;
+    min-height: 100vh;
+    height: auto;
+    padding: 100px 0;
     
     .mobile-images-container {
       display: flex;
@@ -1232,7 +1253,7 @@ const CenterImage = styled.img`
   left: 50%;
   top: 60%;
   transform: translate(-50%, -50%);
-  height: 700px;
+  height: min(700px, 70vh);
   width: auto;
   z-index: 1;
   filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
@@ -1245,8 +1266,8 @@ const CenterImage = styled.img`
 const LeftImage = styled.img`
   position: absolute;
   left: 10%;
-  bottom: 0;
-  height: 550px;
+  bottom: 10%;
+  height: min(550px, 55vh);
   width: auto;
   filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
   
@@ -1262,8 +1283,8 @@ const LeftImage = styled.img`
 const RightImage = styled.img`
   position: absolute;
   right: 10%;
-  bottom: 0;
-  height: 550px;
+  bottom: 10%;
+  height: min(550px, 55vh);
   width: auto;
   filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
   
