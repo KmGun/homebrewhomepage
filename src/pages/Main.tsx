@@ -87,7 +87,8 @@ const Main = () => {
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
   const navigate = useNavigate();
 
-  // 페이지 로드 시 스크롤 위치를 최상단으로 이동
+  // 페이지 로드 시 스크롤 위치를 최상단으로 이동하는 로직 주석 처리
+  /*
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -96,69 +97,77 @@ const Main = () => {
       container.scrollTo(0, 0);
     }
   }, []);
+  */
 
-  // 섹션 3의 스크롤 관련 코드 추가
+  // 섹션 3의 스크롤 관련 코드 수정
   useEffect(() => {
-    const handleThirdSectionScroll = () => {
-      if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 768) {
+      const calculatePositions = () => {
+        const windowWidth = window.innerWidth;
+        const imageWidth = 280;
+        
+        // 화면의 중앙점
+        const screenCenter = windowWidth / 2;
+        // 이미지가 화면 중앙에 올 때의 x좌표
+        const centerPosition = screenCenter - (imageWidth / 2);
+        
+        return {
+          screenCenter,
+          imageWidth,
+          centerPosition
+        };
+      };
+
+      const setInitialPosition = () => {
+        const mobileImages = document.querySelectorAll('.mobile-images-container > div');
+        const { centerPosition } = calculatePositions();
+        
+        mobileImages.forEach((image) => {
+          const element = image as HTMLElement;
+          element.style.transform = `translate3d(${centerPosition}px, 0px, 0px)`;
+        });
+      };
+
+      const handleScroll = () => {
         const thirdSection = document.querySelector('.third-section');
-        if (!thirdSection) return;
+        const mobileImages = document.querySelectorAll('.mobile-images-container > div');
         
-        const mobileImagesContainer = document.querySelector('.mobile-images-container');
-        if (!mobileImagesContainer) return;
+        if (!thirdSection || !mobileImages.length) return;
         
-        const thirdSectionTop = thirdSection.getBoundingClientRect().top;
-        const thirdSectionHeight = thirdSection.getBoundingClientRect().height;
-        const windowHeight = window.innerHeight;
+        const sectionRect = thirdSection.getBoundingClientRect();
+        const { centerPosition, imageWidth } = calculatePositions();
         
-        // 섹션이 화면에 보이는 경우에만 처리
-        if (thirdSectionTop < windowHeight && thirdSectionTop > -thirdSectionHeight) {
-          // 섹션 내에서의 상대적 스크롤 위치 계산 (0~1 사이 값)
-          // 중앙 20% 영역에서만 스크롤이 발생하도록 조정 (극도로 조밀하게)
-          const visibleRatio = 0.2; // 20%
-          const startPoint = (1 - visibleRatio) / 2; // 40%
-          const endPoint = startPoint + visibleRatio; // 60%
+        // 컨테이너 너비의 2배만큼 이동
+        const moveDistance = imageWidth * 2;
+        
+        if (sectionRect.top <= 200 && sectionRect.top >= -400) {
+          const scrollDistance = 600;
+          const currentPosition = 200 - sectionRect.top;
+          const progress = Math.max(0, Math.min(1, currentPosition / scrollDistance));
           
-          // 원래 스크롤 진행도 (0~1)
-          const rawProgress = Math.min(1, Math.max(0, 
-            1 - (thirdSectionTop + thirdSectionHeight) / (thirdSectionHeight + windowHeight)));
-          
-          // 조정된 스크롤 진행도 (startPoint~endPoint 구간을 0~1로 매핑)
-          let adjustedProgress;
-          if (rawProgress < startPoint) {
-            adjustedProgress = 0;
-          } else if (rawProgress > endPoint) {
-            adjustedProgress = 1;
-          } else {
-            adjustedProgress = (rawProgress - startPoint) / visibleRatio;
-          }
-          
-          // 스크롤 진행도에 따라 이미지 컨테이너 스크롤 위치 조정
-          const totalScrollWidth = mobileImagesContainer.scrollWidth - mobileImagesContainer.clientWidth;
-          
-          // 부드러운 스크롤 적용
-          const targetScrollLeft = totalScrollWidth * adjustedProgress;
-          const currentScrollLeft = mobileImagesContainer.scrollLeft;
-          const scrollDiff = targetScrollLeft - currentScrollLeft;
-          
-          if (Math.abs(scrollDiff) > 1) {
-            mobileImagesContainer.scrollTo({
-              left: targetScrollLeft,
-              behavior: 'smooth'
-            });
-          }
+          mobileImages.forEach((image) => {
+            const element = image as HTMLElement;
+            const moveAmount = progress * moveDistance;
+            element.style.transform = `translate3d(${centerPosition - moveAmount}px, 0px, 0px)`;
+          });
+        } else if (sectionRect.top > 200) {
+          setInitialPosition();
         }
-      }
-    };
-    
-    window.addEventListener('scroll', handleThirdSectionScroll);
-    
-    // 초기 실행
-    setTimeout(handleThirdSectionScroll, 500);
-    
-    return () => {
-      window.removeEventListener('scroll', handleThirdSectionScroll);
-    };
+      };
+
+      const handleResize = () => {
+        setInitialPosition();
+      };
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('resize', handleResize);
+      setInitialPosition();
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleResize);
+      };
+    }
   }, []);
 
   const handleAudioRef = (el: HTMLAudioElement | null, index: number) => {
@@ -1134,37 +1143,25 @@ const ThirdSection = styled.div`
     
     .mobile-images-container {
       display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
       width: 100%;
       flex: 1;
       height: 70vh;
-      margin-left: -10%;
-      width: 120%;
-      
-      &::-webkit-scrollbar {
-        display: none;
-      }
-      
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+      user-select: none;
     }
   }
 `;
 
 const ContentArea = styled.div`
-  position: absolute;
-  left: 10%;
-  top: 14%;
-  max-width: 400px;
+  position: relative;
+  max-width: 1400px;
+  width: min(90%, 100% - 200px);
+  margin: 0 auto;
+  padding-top: 14%;
   z-index: 2;
-  
-  @media (min-width: 1600px) {
-    left: 50%;
-    transform: translateX(-50%);
-    margin-left: -30%;
-  }
   
   @media (max-width: 768px) {
     position: relative;
@@ -1281,13 +1278,14 @@ const MobileImageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 80%; /* 90%에서 80%로 줄여 더 겹치게 함 */
-    height: 100%;
+    width: 280px;  // 이미지와 동일한 너비
+    height: auto;  // 이미지 비율에 맞게 자동 조정
     flex-shrink: 0;
-    scroll-snap-align: center;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    margin: 0;
     padding: 0;
     overflow: hidden;
-    margin-right: -20%; /* -10%에서 -20%로 변경하여 더 겹치게 함 */
   }
 `;
 
@@ -1296,11 +1294,11 @@ const MobileImage = styled.img`
   
   @media (max-width: 768px) {
     display: block;
-    height: auto;
-    width: 85%; /* 90%에서 85%로 줄임 */
-    max-width: 340px; /* 360px에서 340px로 줄임 */
-    max-height: 55vh; /* 60vh에서 55vh로 줄임 */
-    object-fit: contain;
+    width: 250px;  // 고정 너비
+    height: auto;  // 비율 자동 유지
+    object-fit: contain;  // 이미지 비율 유지
+    margin: 0;
+    padding: 0;
   }
 `;
 
@@ -1559,6 +1557,11 @@ const BannerButton = styled.a`
   text-decoration: none;
   transition: transform 0.2s;
   cursor: pointer;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
   &:hover {
     transform: scale(1.05);
@@ -1567,6 +1570,8 @@ const BannerButton = styled.a`
   @media (max-width: 768px) {
     padding: 10px 20px;
     font-size: 1rem;
+    border: none;
+    outline: none;
   }
   
   @media (max-width: 480px) {
