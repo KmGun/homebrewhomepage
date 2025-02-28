@@ -5,6 +5,7 @@ import artistIcon from '../assets/Contact/artistIcon.svg';
 import hireIcon from '../assets/Contact/hireIcon.svg';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { useLayoutEffect, useRef } from 'react';
 
 const GlobalStyle = createGlobalStyle`
   html, body {
@@ -17,6 +18,17 @@ const GlobalStyle = createGlobalStyle`
 
 const Contact = () => {
   const navigate = useNavigate();
+  const isInitialMount = useRef(true);
+
+  useLayoutEffect(() => {
+    if (isInitialMount.current) {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      isInitialMount.current = false;
+    }
+  }, []);
 
   const handleCardClick = (type: string) => {
     navigate(`/contact/${type}`);

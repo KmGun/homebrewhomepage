@@ -8,7 +8,7 @@ import rightImage from '../assets/Main/Main2RightImage.png';
 import { ReactComponent as WebIcon } from '../assets/Main/webIcon.svg';
 import { ReactComponent as MobileIcon } from '../assets/Main/mobileIcon.svg';
 import { ReactComponent as DownIcon } from '../assets/Main/MainDownIcon.svg';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import thirdFirstImage from '../assets/Main/Main3FirstImage.png';
 import thirdSecondImage from '../assets/Main/Main3SecondImage.png';
 import Footer from '../components/Footer';
@@ -86,22 +86,26 @@ const Main = () => {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
   const navigate = useNavigate();
+  const isInitialMount = useRef(true);
 
-  // 페이지 로드 시 스크롤 위치를 최상단으로 이동하는 로직 주석 처리
-  /*
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    
-    const container = document.querySelector('.fullpage-container');
-    if (container) {
-      container.scrollTo(0, 0);
+  useLayoutEffect(() => {
+    if (isInitialMount.current) {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      
+      const container = document.querySelector('.fullpage-container');
+      if (container) {
+        container.scrollTop = 0;
+      }
+      isInitialMount.current = false;
     }
   }, []);
-  */
 
   // 섹션 3의 스크롤 관련 코드 수정
   useEffect(() => {
-    if (window.innerWidth <= 768) {
+    if (!isInitialMount.current && window.innerWidth <= 768) {
       const calculatePositions = () => {
         const windowWidth = window.innerWidth;
         const imageWidth = 280;
@@ -1146,7 +1150,7 @@ const ThirdSection = styled.div`
       overflow: hidden;
       width: 100%;
       flex: 1;
-      height: 70vh;
+      height: calc(100vh - 300px);
       margin: 0;
       padding: 0;
       pointer-events: none;
@@ -1167,14 +1171,15 @@ const ContentArea = styled.div`
     position: relative;
     left: 0;
     top: 0;
-    padding: 10% 0 2%;
+    padding: 60px 0 40px;
     width: 100%;
     max-width: 100%;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 30vh;
+    height: auto;
+    min-height: 200px;
     transform: none;
     margin: 0 auto;
     box-sizing: border-box;

@@ -4,13 +4,24 @@ import section2Image from '../assets/About/sec2.jpeg';
 import section1Image from '../assets/About/sec1.png';
 import backgroundImage2 from '../assets/About/backgroundimage.jpeg';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import Footer from '../components/Footer';
 import GlobalStyle from '../styles/GlobalStyle';
 import { ReactComponent as DownIcon } from '../assets/Main/MainDownIcon.svg';
 
 const About = () => {
   const navigate = useNavigate();
+  const isInitialMount = useRef(true);
+  
+  useLayoutEffect(() => {
+    if (isInitialMount.current) {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      isInitialMount.current = false;
+    }
+  }, []);
   
   const scrollToSection2 = () => {
     document.getElementById('section2')?.scrollIntoView({ behavior: 'smooth' });

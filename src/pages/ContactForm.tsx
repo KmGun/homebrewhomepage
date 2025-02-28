@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Main/MainbackgroundImage.png';
-import { useState } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import GlobalStyle from '../styles/GlobalStyle';
 import Footer from '../components/Footer';
 
 const ContactForm = () => {
   const { type } = useParams();
   const navigate = useNavigate();
+  const isInitialMount = useRef(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,6 +16,16 @@ const ContactForm = () => {
     title: '',
     content: ''
   });
+  
+  useLayoutEffect(() => {
+    if (isInitialMount.current) {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      isInitialMount.current = false;
+    }
+  }, []);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.stopPropagation();
